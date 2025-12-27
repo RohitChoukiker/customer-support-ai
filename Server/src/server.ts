@@ -1,19 +1,19 @@
-import fastify from 'fastify';
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import { chatRoutes } from "./routes/chatRoutes";
+import { config } from "./config";
 
-const app = fastify();
+const app = Fastify({ logger: true });
 
-app.get('/', async (request: any, reply: any) => {
-  return { hello: 'world' };
+app.register(cors, {
+  origin: true, 
 });
 
-const start = async () => {
-  try {
-    await app.listen({ port: 3000, host: '0.0.0.0' });
-    console.log('Server listening on http://localhost:3000');
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
-};
+app.register(chatRoutes);
 
-start();
+app.listen(
+  { port: config.port, host: "0.0.0.0" },
+  () => {
+    console.log(`Customer Support api running at port ${config.port}`);
+  }
+);
