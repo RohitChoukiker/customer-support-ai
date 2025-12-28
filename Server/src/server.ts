@@ -8,10 +8,11 @@ import helmet from "@fastify/helmet";
 import { chatRoutes } from "./routes/chat.routes.js";
 import { config } from "./config.js";
 
+
 const app = Fastify({
   logger: true,
-  bodyLimit: 1_000_000, 
-  trustProxy: true,    
+  bodyLimit: 1_000_000,
+  trustProxy: true,
 });
 
 
@@ -32,7 +33,7 @@ await app.register(cors, {
 
 
 await app.register(helmet, {
-  contentSecurityPolicy: false, 
+  contentSecurityPolicy: false,
 });
 
 
@@ -71,21 +72,17 @@ app.setErrorHandler((error, _req, reply) => {
 });
 
 
-app.get("/health", async () => {
-  return { status: "ok" };
-});
+app.get("/health", async () => ({ status: "ok" }));
 
 
 const start = async () => {
   try {
     await app.listen({
-      port: config.port,
+      port: config.port, 
       host: "0.0.0.0",
     });
 
-    app.log.info(
-      ` Customer Support API running on port http://localhost:${config.port}`
-    );
+    app.log.info(`Server listening on port ${config.port}`);
   } catch (err) {
     app.log.error(err);
     process.exit(1);
@@ -96,7 +93,7 @@ start();
 
 
 const shutdown = async () => {
-  app.log.info(" Shutting down server...");
+  app.log.info("Shutting down server...");
   await app.close();
   process.exit(0);
 };
