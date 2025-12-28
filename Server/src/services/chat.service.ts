@@ -5,7 +5,7 @@ export async function handleChatMessage(
   message: string,
   sessionId?: string
 ) {
-  // Session/conversation guardrails
+
   let conversation = null;
   if (sessionId && typeof sessionId === "string" && sessionId.trim()) {
     conversation = await prisma.conversation.findUnique({
@@ -16,7 +16,7 @@ export async function handleChatMessage(
     conversation = await prisma.conversation.create({ data: {} });
   }
 
-  // Defensive: always persist user message, truncate if needed
+
   const safeMessage = typeof message === "string" ? message.slice(0, 1000) : "";
   await prisma.message.create({
     data: {
@@ -26,7 +26,7 @@ export async function handleChatMessage(
     },
   });
 
-  // Limit history for LLM safety
+
   const messages = await prisma.message.findMany({
     where: { conversationId: conversation.id },
     orderBy: { createdAt: "asc" },
@@ -37,7 +37,7 @@ export async function handleChatMessage(
     content: m.text,
   }));
 
-  // LLM guardrails: catch all errors, never leak internals
+  
   let reply = "Sorry, I couldn't generate a response right now.";
   try {
     reply = await generateReply(history, safeMessage);
@@ -46,7 +46,7 @@ export async function handleChatMessage(
     reply = "Sorry, I'm having trouble answering right now. Please try again later.";
   }
 
-  // Always persist AI reply for continuity
+  
   await prisma.message.create({
     data: {
       conversationId: conversation.id,
