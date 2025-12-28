@@ -32,7 +32,7 @@ export async function handleChatMessage(
     orderBy: { createdAt: "asc" },
     take: 10,
   });
-  const history = messages.map((m) => ({
+    const history = messages.map((m: any) => ({
     role: m.sender === "user" ? "user" : "assistant" as "user" | "assistant",
     content: m.text,
   }));
