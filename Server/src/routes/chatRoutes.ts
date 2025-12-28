@@ -1,7 +1,7 @@
 
 import { FastifyInstance } from "fastify";
-import { handleChatMessage } from "../services/chat.service";
-import { prisma } from "../db/prisma";
+import { handleChatMessage } from "../services/chat.service.js";
+import { prisma } from "../db/prisma.js";
 
 export async function chatRoutes(app: FastifyInstance) {
   
@@ -41,7 +41,7 @@ export async function chatRoutes(app: FastifyInstance) {
     try {
       // Input guardrails
       if (typeof message !== "string" || !message.trim()) {
-        return reply.status(400).send({
+        return (reply as any).status(400).send({
           error: "Message cannot be empty",
         });
       }
@@ -57,7 +57,7 @@ export async function chatRoutes(app: FastifyInstance) {
     } catch (err) {
       // Error handling guardrails
       console.error("/chat/message error", err);
-      return reply.status(500).send({
+      return (reply as any).status(500).send({
         error: "Sorry, something went wrong. Please try again later.",
       });
     }
@@ -69,13 +69,13 @@ export async function chatRoutes(app: FastifyInstance) {
     try {
       const { sessionId } = req.params as { sessionId: string };
       if (!sessionId || typeof sessionId !== "string" || !sessionId.trim()) {
-        return reply.status(400).send({ error: "Invalid sessionId." });
+        return (reply as any).status(400).send({ error: "Invalid sessionId." });
       }
       const conversation = await prisma.conversation.findUnique({
         where: { id: sessionId },
       });
       if (!conversation) {
-        return reply.status(404).send({ error: "Conversation not found" });
+        return (reply as any).status(404).send({ error: "Conversation not found" });
       }
       const messages = await prisma.message.findMany({
         where: { conversationId: sessionId },
@@ -86,7 +86,7 @@ export async function chatRoutes(app: FastifyInstance) {
       return reply.send({ sessionId, messages });
     } catch (err) {
       console.error("/chat/history error", err);
-      return reply.status(500).send({ error: "Sorry, could not fetch history. Please try again later." });
+      return (reply as any).status(500).send({ error: "Sorry, could not fetch history. Please try again later." });
     }
   });
 

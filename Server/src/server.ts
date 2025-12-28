@@ -5,8 +5,8 @@ import swaggerUI from "@fastify/swagger-ui";
 import middie from "@fastify/middie";
 import helmet from "@fastify/helmet";
 
-import { chatRoutes } from "./routes/chat.routes";
-import { config } from "./config";
+import { chatRoutes } from "./routes/chat.routes.js";
+import { config } from "./config.js";
 
 const app = Fastify({
   logger: true,

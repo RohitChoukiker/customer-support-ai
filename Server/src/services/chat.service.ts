@@ -1,5 +1,5 @@
-import { prisma } from "../db/prisma";
-import { generateReply } from "./llm.service";
+import { prisma } from "../db/prisma.js";
+import { generateReply } from "./llm.service.js";
 
 export async function handleChatMessage(
   message: string,
@@ -33,7 +33,7 @@ export async function handleChatMessage(
     take: 10,
   });
   const history = messages.map((m) => ({
-    role: m.sender === "user" ? "user" : "assistant",
+    role: m.sender === "user" ? "user" : "assistant" as "user" | "assistant",
     content: m.text,
   }));
 

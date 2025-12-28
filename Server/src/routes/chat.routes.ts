@@ -1,7 +1,7 @@
 
 import { FastifyInstance } from "fastify";
-import { handleChatMessage } from "../services/chat.service";
-import { prisma } from "../db/prisma";
+import { handleChatMessage } from "../services/chat.service.js";
+import { prisma } from "../db/prisma.js";
 
 export async function chatRoutes(app: FastifyInstance) {
   
@@ -39,13 +39,13 @@ export async function chatRoutes(app: FastifyInstance) {
       sessionId?: string;
     };
     if (!message || !message.trim()) {
-      return reply.status(400).send({
+      return (reply as any).status(400).send({
         error: "Message cannot be empty",
       });
     }
 
     if (message.length > 1000) {
-      return reply.status(400).send({
+      return (reply as any).status(400).send({
         error: "Message too long",
       });
     }
@@ -60,7 +60,7 @@ export async function chatRoutes(app: FastifyInstance) {
     const { sessionId } = req.params as { sessionId: string };
 
     if (!sessionId) {
-      return reply.status(400).send({
+      return (reply as any).status(400).send({
         error: "sessionId is required",
       });
     }
@@ -70,7 +70,7 @@ export async function chatRoutes(app: FastifyInstance) {
     });
 
     if (!conversation) {
-      return reply.status(404).send({
+      return (reply as any).status(404).send({
         error: "Conversation not found",
       });
     }
