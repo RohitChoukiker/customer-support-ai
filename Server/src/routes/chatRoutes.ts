@@ -38,57 +38,56 @@ export async function chatRoutes(app: FastifyInstance) {
       message: string;
       sessionId?: string;
     };
-    if (!message || !message.trim()) {
-      return reply.status(400).send({
-        error: "Message cannot be empty",
+    try {
+      // Input guardrails
+      if (typeof message !== "string" || !message.trim()) {
+        return reply.status(400).send({
+          error: "Message cannot be empty",
+        });
+      }
+      let safeMessage = message.trim();
+      const MAX_LEN = 1000;
+      if (safeMessage.length > MAX_LEN) {
+        safeMessage = safeMessage.slice(0, MAX_LEN);
+      }
+
+      // Defensive: never trust sessionId from client
+      const result = await handleChatMessage(safeMessage, sessionId);
+      return reply.send(result);
+    } catch (err) {
+      // Error handling guardrails
+      console.error("/chat/message error", err);
+      return reply.status(500).send({
+        error: "Sorry, something went wrong. Please try again later.",
       });
     }
-
-    if (message.length > 1000) {
-      return reply.status(400).send({
-        error: "Message too long",
-      });
-    }
-
-    const result = await handleChatMessage(message.trim(), sessionId);
-    return reply.send(result);
   }
 );
 
 
- app.get("/chat/history/:sessionId", async (req, reply) => {
-    const { sessionId } = req.params as { sessionId: string };
-
-    if (!sessionId) {
-      return reply.status(400).send({
-        error: "sessionId is required",
+  app.get("/chat/history/:sessionId", async (req, reply) => {
+    try {
+      const { sessionId } = req.params as { sessionId: string };
+      if (!sessionId || typeof sessionId !== "string" || !sessionId.trim()) {
+        return reply.status(400).send({ error: "Invalid sessionId." });
+      }
+      const conversation = await prisma.conversation.findUnique({
+        where: { id: sessionId },
       });
-    }
-
-    const conversation = await prisma.conversation.findUnique({
-      where: { id: sessionId },
-    });
-
-    if (!conversation) {
-      return reply.status(404).send({
-        error: "Conversation not found",
+      if (!conversation) {
+        return reply.status(404).send({ error: "Conversation not found" });
+      }
+      const messages = await prisma.message.findMany({
+        where: { conversationId: sessionId },
+        orderBy: { createdAt: "asc" },
+        select: { sender: true, text: true, createdAt: true },
+        take: 50, // Limit history for safety
       });
+      return reply.send({ sessionId, messages });
+    } catch (err) {
+      console.error("/chat/history error", err);
+      return reply.status(500).send({ error: "Sorry, could not fetch history. Please try again later." });
     }
-
-    const messages = await prisma.message.findMany({
-      where: { conversationId: sessionId },
-      orderBy: { createdAt: "asc" },
-      select: {
-        sender: true,
-        text: true,
-        createdAt: true,
-      },
-    });
-
-    return reply.send({
-      sessionId,
-      messages,
-    });
   });
 
 }

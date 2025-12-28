@@ -5,7 +5,7 @@ import swaggerUI from "@fastify/swagger-ui";
 import middie from "@fastify/middie";
 import morgan from "morgan";
 
-import { chatRoutes } from "./routes/chatRoutes";
+import { chatRoutes } from "./routes/chat.routes";
 import { config } from "./config";
 
 const app = Fastify({ logger: true });
