@@ -7,8 +7,11 @@ COPY package*.json ./
 
 RUN npm install --production
 
+
+RUN npm run build
+
 COPY . .
 
 EXPOSE 8080
 
-CMD ["npm", "start"]
+CMD ["node", "dist/server.js"]
