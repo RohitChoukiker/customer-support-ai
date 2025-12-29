@@ -109,7 +109,7 @@ npx prisma generate
 ```sh
 npm run dev
 
-npm run build && npm start
+npm run build && npm start # For production build
 ```
 The server will run on `http://localhost:8080` by default.
 
@@ -128,6 +128,38 @@ The frontend will run on `http://localhost:5173` by default.
 ## API Endpoints
 
 - `POST /chat/message` — Send a message to the AI agent (see Swagger docs if running in development mode)
+
+---
+
+## LLM Integration Notes
+
+- **Provider:** Google Gemini
+- **Usage:** Generating customer support responses
+
+### Prompting Strategy
+- A system prompt defines the AI as a customer support agent.
+- Basic FAQ context (shipping, returns, support hours) is injected
+  to ensure reliable answers.
+- Recent conversation history is included to maintain context.
+
+The LLM logic is encapsulated in a service layer, allowing easy
+replacement with another provider (e.g. OpenAI or Claude).
+
+---
+
+## Trade-offs & Future Improvements
+
+### Trade-offs
+- Authentication is intentionally omitted to keep scope focused.
+- FAQ knowledge is hardcoded instead of stored in a database.
+- Responses are non-streaming to reduce complexity.
+
+### If I Had More Time…
+- Add streaming responses with typing indicators.
+- Store FAQs in a database with an admin interface.
+- Add Redis caching for frequently accessed conversations.
+- Support authentication and multi-tenant usage.
+- Integrate external tools (order status, refunds, CRM).
 
 ---
 
