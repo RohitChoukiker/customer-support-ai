@@ -12,7 +12,7 @@ interface Message {
 }
 
 const API_BASE =
-  "http://0.0.0.0:8080";
+  "https://customer-support-ai-561129735156.europe-west1.run.app";
 
 const ChatWindow: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
