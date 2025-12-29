@@ -127,7 +127,9 @@ The frontend will run on `http://localhost:5173` by default.
 
 ## API Endpoints
 
-- `POST /chat/message` — Send a message to the AI agent (see Swagger docs if running in development mode)
+- `POST /chat/message` — Send a message to the AI agent. Request body: `{ message: string, sessionId?: string }`. Returns AI reply and sessionId. (See Swagger docs if running in development mode)
+
+- `GET /chat/history/:sessionId` — Get the full message history for a conversation session. Returns `{ sessionId, messages: [{ sender, text, createdAt }] }`.
 
 ---
 
