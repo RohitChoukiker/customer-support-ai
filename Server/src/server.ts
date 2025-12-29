@@ -51,7 +51,7 @@ if (process.env.NODE_ENV !== "production") {
 
 await app.register(chatRoutes);
 
-app.get("/health", async () => ({ status: "ok" }));
+app.get("/", async () => ({ status: "ok" }));
 
 app.setErrorHandler((error, _req, reply) => {
   app.log.error(error);
