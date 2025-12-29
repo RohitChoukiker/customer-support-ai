@@ -34,3 +34,4 @@ Built as a take-home assignment for a Founding Full-Stack Engineer role.
 - Deployed on Vercel
 
 ---
+
