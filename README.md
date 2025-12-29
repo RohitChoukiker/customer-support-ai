@@ -27,7 +27,8 @@ Built as a take-home assignment for a Founding Full-Stack Engineer role.
 - Prisma ORM
 - PostgreSQL (Google Cloud SQL)
 - Gemini API
-- Deployed on Cloud Run (GCP)
+- Dockerize the backend for Cloud Run deployment.
+
 
 ### Frontend
 - React + Vite + TailwindCSS
