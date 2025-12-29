@@ -152,9 +152,9 @@ replacement with another provider (e.g. OpenAI or Claude).
 ## Trade-offs & Future Improvements
 
 ### Trade-offs
-- No auth → out of scope
-- Hardcoded FAQs → faster delivery
-- No streaming → simpler UX
+- Authentication is intentionally omitted to keep scope focused.
+- FAQ knowledge is hardcoded instead of stored in a database.
+- Responses are non-streaming to reduce complexity.
 
 ### If I Had More Time…
 - Add streaming responses with typing indicators.
