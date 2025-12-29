@@ -46,6 +46,28 @@ customer-support-ai/
 
 ---
 
+##  Architecture Overview
+
+The backend follows a clear separation of concerns:
+
+- **Routes**  
+  Handle HTTP request/response logic and validation.
+
+- **Services**  
+  Contain core business logic such as handling chat messages and calling the LLM.
+
+- **Database Layer**  
+  Managed using Prisma ORM for clean data access and migrations.
+
+- **Config Layer**  
+  Centralized environment variable and runtime configuration handling.
+
+This structure keeps the backend modular, testable, and easy to extend to
+additional channels (e.g. WhatsApp, Instagram) or alternate LLM providers.
+
+---
+
+
 ## Getting Started (Local Development)
 
 ### Prerequisites
