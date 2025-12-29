@@ -18,7 +18,7 @@ RUN npm install --production
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
-COPY .env .
+	# COPY .env .
 
 ENV NODE_ENV=production
 ENV PORT=8080
