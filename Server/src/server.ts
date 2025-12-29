@@ -6,15 +6,14 @@ import middie from "@fastify/middie";
 import helmet from "@fastify/helmet";
 
 import { chatRoutes } from "./routes/chat.routes.js";
-import { config } from "./config.js";
 
+const PORT = Number(process.env.PORT) || 8080;
 
 const app = Fastify({
   logger: true,
   bodyLimit: 1_000_000,
   trustProxy: true,
 });
-
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -31,14 +30,8 @@ await app.register(cors, {
   },
 });
 
-
-await app.register(helmet, {
-  contentSecurityPolicy: false,
-});
-
-
+await app.register(helmet, { contentSecurityPolicy: false });
 await app.register(middie);
-
 
 if (process.env.NODE_ENV !== "production") {
   await app.register(swagger, {
@@ -53,36 +46,26 @@ if (process.env.NODE_ENV !== "production") {
 
   await app.register(swaggerUI, {
     routePrefix: "/docs",
-    uiConfig: {
-      docExpansion: "list",
-      deepLinking: false,
-    },
   });
 }
 
-
 await app.register(chatRoutes);
-
-
-app.setErrorHandler((error, _req, reply) => {
-  app.log.error(error);
-  reply.status(500).send({
-    error: "Internal server error",
-  });
-});
-
 
 app.get("/health", async () => ({ status: "ok" }));
 
+app.setErrorHandler((error, _req, reply) => {
+  app.log.error(error);
+  reply.status(500).send({ error: "Internal server error" });
+});
 
 const start = async () => {
   try {
     await app.listen({
-      port: config.port, 
+      port: PORT,
       host: "0.0.0.0",
     });
 
-    app.log.info(`Server listening on port ${config.port}`);
+    app.log.info(`Server listening on port ${PORT}`);
   } catch (err) {
     app.log.error(err);
     process.exit(1);
@@ -90,7 +73,6 @@ const start = async () => {
 };
 
 start();
-
 
 const shutdown = async () => {
   app.log.info("Shutting down server...");
